@@ -1,0 +1,1 @@
+{"id": "resp_3", "created_at": 1767225602, "status": "failed", "model": "local-model", "output": [], "error": {"code": "server_error", "message": "boom"}}

@@ -1,0 +1,1 @@
+{"id": "resp_2", "created_at": 1767225601, "status": "incomplete", "model": "local-model", "output": [], "usage": null, "incomplete_details": {"reason": "max_output_tokens"}}

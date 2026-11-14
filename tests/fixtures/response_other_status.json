@@ -1,0 +1,1 @@
+{"id": "resp_4", "created_at": 1767225603, "status": "paused", "model": "local-model", "output": [{"type": "message", "role": "assistant", "content": "plain text reply"}]}

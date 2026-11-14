@@ -1,0 +1,30 @@
+{
+  "id": "resp_1",
+  "object": "response",
+  "created_at": 1767225600,
+  "status": "completed",
+  "model": "gpt-5.5",
+  "output": [
+    {"type": "reasoning", "id": "rs_1", "summary": [{"type": "summary_text", "text": "Thinking about it."}], "encrypted_content": "gAAAAB-opaque", "status": "completed"},
+    {"type": "web_search_call", "id": "ws_1", "status": "completed", "action": {"type": "search", "query": "rust serde", "sources": [{"type": "url", "url": "https://serde.rs/"}]}},
+    {"type": "message", "id": "msg_1", "role": "assistant", "status": "completed", "phase": "final_answer", "content": [
+      {"type": "output_text", "text": "Hello ", "annotations": [{"type": "url_citation", "url": "https://serde.rs/", "title": "Serde", "start_index": 0, "end_index": 5}, {"type": "file_path", "file_id": "file-x", "index": 1}]},
+      {"type": "output_text", "text": "world.", "annotations": [], "logprobs": [{"token": "world", "logprob": -0.01, "bytes": [119, 111, 114, 108, 100], "top_logprobs": []}]}
+    ]},
+    {"type": "function_call", "id": "fc_1", "call_id": "call_1", "name": "read_file", "arguments": "{\"path\":\"notes.txt\"}", "status": "completed"},
+    {"type": "mcp_call", "id": "mcp_1", "server_label": "docs", "name": "search", "arguments": "{}"}
+  ],
+  "usage": {
+    "input_tokens": 120,
+    "input_tokens_details": {"cached_tokens": 100},
+    "output_tokens": 30,
+    "output_tokens_details": {"reasoning_tokens": 12},
+    "total_tokens": 150
+  },
+  "error": null,
+  "incomplete_details": null,
+  "previous_response_id": null,
+  "service_tier": "default",
+  "parallel_tool_calls": true,
+  "store": false
+}
