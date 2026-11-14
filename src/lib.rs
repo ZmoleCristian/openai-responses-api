@@ -13,6 +13,7 @@ mod item;
 mod open;
 mod request;
 mod response;
+mod retry_after;
 mod stream;
 
 pub use client::Client;
@@ -50,4 +51,5 @@ pub use stream::{
     Lifecycle, OutputItemEvent, PartDelta, RefusalDone, StreamError, StreamEvent, SummaryDelta,
     SummaryDone, SummaryPartEvent, TextDone, events,
 };
+pub use retry_after::RetryAfter;
 pub use url::Url;

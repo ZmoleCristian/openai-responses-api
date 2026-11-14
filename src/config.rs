@@ -9,6 +9,7 @@ pub const OPENAI_BASE_URL: &str = "https://api.openai.com/v1";
 pub(crate) const RESPONSES_PATH: &[&str] = &["responses"];
 pub(crate) const INPUT_TOKENS_PATH: &[&str] = &["input_tokens"];
 pub(crate) const CANCEL_SEGMENT: &str = "cancel";
+pub(crate) const RETRY_AFTER_MS: HeaderName = HeaderName::from_static("retry-after-ms");
 pub(crate) const API_KEY_HEADER: HeaderName = HeaderName::from_static("api-key");
 pub(crate) const ORGANIZATION_HEADER: HeaderName = HeaderName::from_static("openai-organization");
 pub(crate) const PROJECT_HEADER: HeaderName = HeaderName::from_static("openai-project");

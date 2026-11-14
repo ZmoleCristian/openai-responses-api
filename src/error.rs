@@ -8,6 +8,7 @@ use serde_json::Value;
 use url::{ParseError, Url};
 
 use crate::response::ApiError;
+use crate::retry_after::RetryAfter;
 
 #[derive(Debug)]
 pub enum ResponsesError {
@@ -18,11 +19,13 @@ pub enum ResponsesError {
     Api {
         status: StatusCode,
         error: ApiError,
+        retry_after: RetryAfter,
     },
     Status {
         status: StatusCode,
         body: String,
         parse: serde_json::Error,
+        retry_after: RetryAfter,
     },
     Untyped(Value),
     BaseUrl(ParseError),
@@ -36,13 +39,14 @@ impl Display for ResponsesError {
             ResponsesError::Header(e) => write!(f, "header value: {e}"),
             ResponsesError::Json(e) => write!(f, "json: {e}"),
             ResponsesError::Sse(e) => write!(f, "sse: {e}"),
-            ResponsesError::Api { status, error } => {
+            ResponsesError::Api { status, error, .. } => {
                 write!(f, "api {status}: {:?}: {}", error.kind, error.message)
             }
             ResponsesError::Status {
                 status,
                 body,
                 parse,
+                ..
             } => write!(f, "api {status}, unparsed error body ({parse}): {body}"),
             ResponsesError::Untyped(value) => write!(f, "object without a type tag: {value}"),
             ResponsesError::BaseUrl(e) => write!(f, "base url: {e}"),

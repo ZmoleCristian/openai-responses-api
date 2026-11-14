@@ -9,6 +9,7 @@ use crate::config::{
     PROJECT_HEADER, RESPONSES_PATH,
 };
 use crate::error::ResponsesError;
+use crate::retry_after::RetryAfter;
 use crate::ids::{ResponseId, Secret};
 use crate::request::{CountInputTokens, CreateResponse};
 use crate::response::{ApiErrorBody, Deleted, InputTokens, Response};
@@ -108,16 +109,19 @@ impl Client {
         if status.is_success() {
             return Ok(response);
         }
+        let retry_after = RetryAfter::read(response.headers());
         let body = response.text().await?;
         match serde_json::from_str::<ApiErrorBody>(&body) {
             Ok(parsed) => Err(ResponsesError::Api {
                 status,
                 error: parsed.error,
+                retry_after,
             }),
             Err(parse) => Err(ResponsesError::Status {
                 status,
                 body,
                 parse,
+                retry_after,
             }),
         }
     }
