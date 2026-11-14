@@ -4,6 +4,8 @@
 #![deny(unused_variables)]
 #![deny(unused_assignments)]
 
+mod client;
+mod config;
 mod content;
 mod error;
 mod ids;
@@ -11,7 +13,10 @@ mod item;
 mod open;
 mod request;
 mod response;
+mod stream;
 
+pub use client::Client;
+pub use config::{Auth, Config, OPENAI_BASE_URL};
 pub use content::{
     Annotation, AnnotationKind, Content, ContentPart, FileSource, ImageDetail, ImageSource,
     InputFile, InputImage, LogProb, OutputText, Part, Role, TopLogProb,
@@ -39,5 +44,10 @@ pub use response::{
     ApiError, ApiErrorBody, ApiErrorKind, Deleted, ErrorCode, IncompleteDetails, IncompleteReason,
     InputTokens, InputTokensDetails, OutputTokensDetails, Response, ResponseError, ResponseStatus,
     Usage,
+};
+pub use stream::{
+    AnnotationAdded, ArgumentsDone, ContentPartEvent, Event, InputDone, ItemDelta, ItemProgress,
+    Lifecycle, OutputItemEvent, PartDelta, RefusalDone, StreamError, StreamEvent, SummaryDelta,
+    SummaryDone, SummaryPartEvent, TextDone, events,
 };
 pub use url::Url;
