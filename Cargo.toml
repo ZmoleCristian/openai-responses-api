@@ -1,6 +1,6 @@
 [package]
 name = "openai-responses-api"
-version = "0.1.1"
+version = "0.2.0"
 edition = "2024"
 description = "Typed client for the OpenAI Responses API: input and output items, HTTP client, SSE event stream"
 license = "0BSD"
