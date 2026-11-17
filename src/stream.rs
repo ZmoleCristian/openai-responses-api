@@ -1,7 +1,9 @@
+use std::collections::BTreeMap;
+
 use eventsource_stream::Eventsource;
 use futures_util::{Stream, StreamExt};
 use serde::{Deserialize, Serialize};
-use serde_json::Value;
+use serde_json::{Map, Value};
 
 use crate::config::DONE;
 use crate::content::{Annotation, ContentPart, LogProb};
@@ -72,6 +74,8 @@ pub enum Event {
     WebSearchCallSearching(ItemProgress),
     #[serde(rename = "response.web_search_call.completed")]
     WebSearchCallCompleted(ItemProgress),
+    #[serde(rename = "response.metadata")]
+    Metadata(MetadataEvent),
     #[serde(rename = "error")]
     Error(StreamError),
 }
@@ -106,6 +110,7 @@ impl Kinds for Event {
         "response.web_search_call.in_progress",
         "response.web_search_call.searching",
         "response.web_search_call.completed",
+        "response.metadata",
         "error",
     ];
 }
@@ -235,9 +240,81 @@ pub struct ItemProgress {
 pub struct StreamError {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub code: Option<ErrorCode>,
-    pub message: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub message: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub param: Option<Param>,
+    pub sequence_number: u64,
+}
+
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+pub struct ModerationCheck {
+    pub protection_type: String,
+    #[serde(default)]
+    pub outputs: Vec<ModerationCheckOutput>,
+}
+
+impl ModerationCheck {
+    #[must_use]
+    pub fn blocked(&self) -> bool {
+        self.outputs.iter().any(|output| output.is_blocked)
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
+pub struct ModerationCheckOutput {
+    #[serde(default)]
+    pub is_blocked: bool,
+    #[serde(flatten)]
+    pub extra: Map<String, Value>,
+}
+
+pub type ModerationSection = BTreeMap<String, ModerationCheck>;
+
+#[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
+pub struct ChatGptModerationMetadata {
+    #[serde(default)]
+    pub generation: ModerationSection,
+    #[serde(default)]
+    pub prompt: ModerationSection,
+    #[serde(default)]
+    pub tool_call: ModerationSection,
+    #[serde(default)]
+    pub tool_response: ModerationSection,
+}
+
+impl ChatGptModerationMetadata {
+    pub fn blocked_checks(&self) -> Vec<&ModerationCheck> {
+        let mut blocked = Vec::new();
+        for section in [
+            &self.generation,
+            &self.prompt,
+            &self.tool_call,
+            &self.tool_response,
+        ] {
+            for check in section.values() {
+                if check.blocked() {
+                    blocked.push(check);
+                }
+            }
+        }
+        blocked
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
+pub struct ResponseMetadata {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub openai_chatgpt_moderation_metadata: Option<ChatGptModerationMetadata>,
+    #[serde(flatten)]
+    pub extra: Map<String, Value>,
+}
+
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+pub struct MetadataEvent {
+    #[serde(default)]
+    pub metadata: ResponseMetadata,
+    pub response_id: String,
     pub sequence_number: u64,
 }
 

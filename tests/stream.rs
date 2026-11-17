@@ -54,6 +54,7 @@ fn kind(event: &StreamEvent) -> &str {
         Open::Known(Event::WebSearchCallSearching(..)) => "search_searching",
         Open::Known(Event::WebSearchCallCompleted(..)) => "search_completed",
         Open::Known(Event::Error(..)) => "error",
+        Open::Known(Event::Metadata(..)) => "metadata",
         Open::Unknown(..) => "unknown",
     }
 }
@@ -137,7 +138,28 @@ fn error_event_is_typed() -> Result<(), ResponsesError> {
         panic!("last event is not an error");
     };
     assert_eq!(error.code, Some(ErrorCode::RateLimitExceeded));
-    assert_eq!(error.message, "slow down");
+    assert_eq!(error.message, Some("slow down".to_owned()));
+    Ok(())
+}
+
+#[test]
+fn moderation_block_and_messageless_error_are_typed() -> Result<(), ResponsesError> {
+    let events = all(include_str!("fixtures/stream_moderation_block.sse"), 11)?;
+    let kinds: Vec<&str> = events.iter().map(kind).collect();
+    assert_eq!(kinds, ["created", "metadata", "error"]);
+    let Open::Known(Event::Metadata(metadata)) = &events[1] else {
+        panic!("second event is not metadata: {:?}", events[1]);
+    };
+    let Some(moderation) = &metadata.metadata.openai_chatgpt_moderation_metadata else {
+        panic!("metadata event carries no moderation metadata");
+    };
+    let blocked = moderation.blocked_checks();
+    assert_eq!(blocked.len(), 1);
+    assert_eq!(blocked[0].protection_type, "cyber_security");
+    let Open::Known(Event::Error(error)) = &events[2] else {
+        panic!("third event is not an error: {:?}", events[2]);
+    };
+    assert_eq!(error.message, None);
     Ok(())
 }
 

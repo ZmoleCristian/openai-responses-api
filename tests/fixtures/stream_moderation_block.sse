@@ -1,0 +1,9 @@
+event: response.created
+data: {"type": "response.created", "response": {"id": "resp_1", "object": "response", "created_at": 1767225600, "status": "in_progress", "model": "gpt-6.1-terra", "output": [], "usage": null}, "sequence_number": 0}
+
+event: response.metadata
+data: {"type": "response.metadata", "response_id": "resp_1", "sequence_number": 1, "metadata": {"openai_chatgpt_moderation_metadata": {"generation": {}, "prompt": {"cyber_security": {"protection_type": "cyber_security", "outputs": [{"is_blocked": true, "cyber_trusted_access": false, "results": []}]}}, "tool_call": {}, "tool_response": {}}}}
+
+event: error
+data: {"type": "error", "code": "server_error", "sequence_number": 2}
+

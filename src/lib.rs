@@ -46,10 +46,11 @@ pub use response::{
     InputTokens, InputTokensDetails, OutputTokensDetails, Response, ResponseError, ResponseStatus,
     Usage,
 };
-pub use stream::{
-    AnnotationAdded, ArgumentsDone, ContentPartEvent, Event, InputDone, ItemDelta, ItemProgress,
-    Lifecycle, OutputItemEvent, PartDelta, RefusalDone, StreamError, StreamEvent, SummaryDelta,
-    SummaryDone, SummaryPartEvent, TextDone, events,
-};
 pub use retry_after::RetryAfter;
+pub use stream::{
+    AnnotationAdded, ArgumentsDone, ChatGptModerationMetadata, ContentPartEvent, Event, InputDone,
+    ItemDelta, ItemProgress, Lifecycle, MetadataEvent, ModerationCheck, ModerationCheckOutput,
+    ModerationSection, OutputItemEvent, PartDelta, RefusalDone, ResponseMetadata, StreamError,
+    StreamEvent, SummaryDelta, SummaryDone, SummaryPartEvent, TextDone, events,
+};
 pub use url::Url;
